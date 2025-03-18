@@ -30,26 +30,37 @@ def istasyon_ekle(self, idx: str, ad: str, hat: str) -> None:
         istasyon2.komsu_ekle(istasyon1, sure)
     
     def en_az_aktarma_bul(self, baslangic_id: str, hedef_id: str) -> Optional[List[Istasyon]]:
-        """BFS algoritması kullanarak en az aktarmalı rotayı bulur
         
-        Bu fonksiyonu tamamlayın:
-        1. Başlangıç ve hedef istasyonların varlığını kontrol edin
-        2. BFS algoritmasını kullanarak en az aktarmalı rotayı bulun
-        3. Rota bulunamazsa None, bulunursa istasyon listesi döndürün
-        4. Fonksiyonu tamamladıktan sonra, # TODO ve pass satırlarını kaldırın
-        
-        İpuçları:
-        - collections.deque kullanarak bir kuyruk oluşturun, HINT: kuyruk = deque([(baslangic, [baslangic])])
-        - Ziyaret edilen istasyonları takip edin
-        - Her adımda komşu istasyonları keşfedin
-        """
-        # TODO: Bu fonksiyonu tamamlayın
-        pass
+        """BFS algoritması kullanarak en az aktarmalı rotayı bulur"""
+        # "Başlangıç" ve "Bitiş" duraklarını inceledim. Var mı yoklar mı diye.
         if baslangic_id not in self.istasyonlar or hedef_id not in self.istasyonlar:
             return None
+            
         baslangic = self.istasyonlar[baslangic_id]
         hedef = self.istasyonlar[hedef_id]
-        ziyaret_edildi = {baslangic}        
+        
+        # Queue'yu başlangıç durağı ve path'iyle başlattım.
+        kuyruk = deque([(baslangic, [baslangic])])
+        ziyaret_edildi = {baslangic}
+        
+        while kuyruk:
+            # Sıradaki durağı ve path'ini aldım.
+            simdiki_istasyon, rota = kuyruk.popleft()
+            
+            # Hedefe varıldı mı diye kontrol ettim.
+            if simdiki_istasyon == hedef:
+                return rota
+                
+            # Komşulara baktım.
+            for komsu, _ in simdiki_istasyon.komsular:
+                if komsu not in ziyaret_edildi:
+                    ziyaret_edildi.add(komsu)
+                    # Queue' ya güncellenmiş path' le komşuyu ekledim.
+                    yeni_rota = rota + [komsu]
+                    kuyruk.append((komsu, yeni_rota))
+                    
+        # Eğer route bulunamadıysa none returnlenecek.
+        return None       
 
 
     def en_hizli_rota_bul(self, baslangic_id: str, hedef_id: str) -> Optional[Tuple[List[Istasyon], int]]:
