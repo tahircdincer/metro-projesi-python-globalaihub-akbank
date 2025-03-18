@@ -17,12 +17,13 @@ class MetroAgi:
         self.istasyonlar: Dict[str, Istasyon] = {}
         self.hatlar: Dict[str, List[Istasyon]] = defaultdict(list)
 
-def istasyon_ekle(self, idx: str, ad: str, hat: str) -> None:
-        if idx not in self.istasyonlar:  
+    def istasyon_ekle(self, idx: str, ad: str, hat: str) -> None:
+        if idx not in self.istasyonlar:           
             istasyon = Istasyon(idx, ad, hat)
             self.istasyonlar[idx] = istasyon
-            self.hatlar[hat].append(istasyon)n)
+            self.hatlar[hat].append(istasyon)
 # "id"- "idx" olarak uyguladı ki parametre ismi matchlensin.
+
     def baglanti_ekle(self, istasyon1_id: str, istasyon2_id: str, sure: int) -> None:
         istasyon1 = self.istasyonlar[istasyon1_id]
         istasyon2 = self.istasyonlar[istasyon2_id]
@@ -30,62 +31,83 @@ def istasyon_ekle(self, idx: str, ad: str, hat: str) -> None:
         istasyon2.komsu_ekle(istasyon1, sure)
     
     def en_az_aktarma_bul(self, baslangic_id: str, hedef_id: str) -> Optional[List[Istasyon]]:
-        
         """BFS algoritması kullanarak en az aktarmalı rotayı bulur"""
-        # "Başlangıç" ve "Bitiş" duraklarını inceledim. Var mı yoklar mı diye.
         if baslangic_id not in self.istasyonlar or hedef_id not in self.istasyonlar:
             return None
             
         baslangic = self.istasyonlar[baslangic_id]
         hedef = self.istasyonlar[hedef_id]
         
-        # Queue'yu başlangıç durağı ve path'iyle başlattım.
+        # BFS algoritmasıa bir queue oluşturdum: (istasyon, rota) olarak
         kuyruk = deque([(baslangic, [baslangic])])
         ziyaret_edildi = {baslangic}
         
         while kuyruk:
-            # Sıradaki durağı ve path'ini aldım.
-            simdiki_istasyon, rota = kuyruk.popleft()
+            istasyon, rota = kuyruk.popleft()
             
-            # Hedefe varıldı mı diye kontrol ettim.
-            if simdiki_istasyon == hedef:
+            # Hedef istasyona vardım mı varmadım mıya baktım.
+            if istasyon.idx == hedef_id:
                 return rota
                 
-            # Komşulara baktım.
-            for komsu, _ in simdiki_istasyon.komsular:
+            # Komşu istasyonları kontrol ettim.
+            for komsu, _ in istasyon.komsular:
                 if komsu not in ziyaret_edildi:
                     ziyaret_edildi.add(komsu)
-                    # Queue' ya güncellenmiş path' le komşuyu ekledim.
                     yeni_rota = rota + [komsu]
                     kuyruk.append((komsu, yeni_rota))
                     
-        # Eğer route bulunamadıysa none returnlenecek.
-        return None       
-
+        # Rota bulunamadı
+        return None
 
     def en_hizli_rota_bul(self, baslangic_id: str, hedef_id: str) -> Optional[Tuple[List[Istasyon], int]]:
-        """A* algoritması kullanarak en hızlı rotayı bulur
-        
-        Bu fonksiyonu tamamlayın:
-        1. Başlangıç ve hedef istasyonların varlığını kontrol edin
-        2. A* algoritmasını kullanarak en hızlı rotayı bulun
-        3. Rota bulunamazsa None, bulunursa (istasyon_listesi, toplam_sure) tuple'ı döndürün
-        4. Fonksiyonu tamamladıktan sonra, # TODO ve pass satırlarını kaldırın
-        
-        İpuçları:
-        - heapq modülünü kullanarak bir öncelik kuyruğu oluşturun, HINT: pq = [(0, id(baslangic), baslangic, [baslangic])]
-        - Ziyaret edilen istasyonları takip edin
-        - Her adımda toplam süreyi hesaplayın
-        - En düşük süreye sahip rotayı seçin
-        """
-        # TODO: Bu fonksiyonu tamamlayın
-        pass
+        """A* algoritması kullanarak en hızlı rotayı bulur"""
         if baslangic_id not in self.istasyonlar or hedef_id not in self.istasyonlar:
             return None
 
         baslangic = self.istasyonlar[baslangic_id]
         hedef = self.istasyonlar[hedef_id]
-        ziyaret_edildi = set()
+        
+        # Hat değişimlerine göre heuristik hesapladım
+        def heuristik(istasyon):
+            # En iyi senaryoda direkt hedefe varırken hat "değişimi" yapmak durumunda mı değil miyi düşünerek, bunun gerekip gerekmediğine göre ek maliyet ekledim.
+            hat_degisimi_maliyeti = 0 if istasyon.hat == hedef.hat else 2
+            return hat_degisimi_maliyeti
+        
+        # Öncelikler adına bir kuyruk oşuşturdum: (f_skoru, istasyon_id, istasyon, rota, g_skoru)
+        # f_skoru = g_skoru + h_skoru (gerçek maliyeti ve tahmini maliyetinin toplamı)
+        # istasyon_id, aynı f_skoru'na sahip durumlar adına kararlı sıralama sağladı - İngilizce terminoloji kullanmak daha iyi olurdu diye düşündüm amma projeye uyumlu olması açısından kullanmadım:) -
+        baslangic_f_skor = heuristik(baslangic)
+        pq = [(baslangic_f_skor, id(baslangic), baslangic, [baslangic], 0)]
+        
+        # Tümistasyonlara en iyi g_skoru (başlangıçtan o istasyona olan en kısa yol)
+        g_skorlari = {baslangic.idx: 0}
+        
+        while pq:
+            _, _, istasyon, rota, g_skor = heapq.heappop(pq)
+            
+            # Hedef istasyona vardım mı varmadım mı?
+            if istasyon.idx == hedef_id:
+                return (rota, g_skor)
+                
+            # Daha önceden daha iyi bir yol varsa yolu skipledim.
+            if g_skor > g_skorlari.get(istasyon.idx, float('inf')):
+                continue
+                
+            # Komşulara baktım.
+            for komsu, sure in istasyon.komsular:
+                yeni_g_skor = g_skor + sure
+                
+                # Kıyasladım. Daha önceki yoldan daha mı kısa diye yol
+                if yeni_g_skor < g_skorlari.get(komsu.idx, float('inf')):
+                    g_skorlari[komsu.idx] = yeni_g_skor
+                    yeni_rota = rota + [komsu]
+                    
+                    # A* adına biraz önce belirttiğim f_skoru = g_skoru + h_skoru
+                    f_skoru = yeni_g_skor + heuristik(komsu)
+                    heapq.heappush(pq, (f_skoru, id(komsu), komsu, yeni_rota, yeni_g_skor))
+        
+        # Bulunamadıysa none returnlendi.
+        return None
 
 # Örnek Kullanım
 if __name__ == "__main__":
@@ -165,4 +187,4 @@ if __name__ == "__main__":
     sonuc = metro.en_hizli_rota_bul("T4", "M1")
     if sonuc:
         rota, sure = sonuc
-        print(f"En hızlı rota ({sure} dakika):", " -> ".join(i.ad for i in rota)) 
+        print(f"En hızlı rota ({sure} dakika):", " -> ".join(i.ad for i in rota))
