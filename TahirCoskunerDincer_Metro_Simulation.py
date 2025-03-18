@@ -108,6 +108,7 @@ class MetroAgi:
         
         # Bulunamadıysa none returnlendi.
         return None
+    # Eğer sadece g-score(başlangıçtan beir olan konum) kullansaydım Dijkstra'ya kayabilirdi.
 
 # Örnek Kullanım
 if __name__ == "__main__":
