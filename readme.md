@@ -13,9 +13,9 @@ Proje aşağıdaki koşulları sağlayan bir metro ağı simülasyonu oluşturur
 
 ## Kullanılan Teknolojiler ve Kütüphaneler
 
-- **collections.deque**: BFS algoritması için kuyruk veri yapısını uygulanıldı.
-- **heapq**: A\* algoritması için öncelik kuyruğunu uygulanıldı.
-- **defaultdict**: İstasyonları metro hatlarına göre düzenlenildi.
+- **collections.deque**: BFS algoritması için kuyruk veri yapısını uygulandı.
+- **heapq**: A\* algoritması için öncelik kuyruğunu uygulandı.
+- **defaultdict**: İstasyonları metro hatlarına göre düzenlendi.
 - **typing**: Kod okunabilirliğini ve sürdürülebilirliği adına tip ipuçları için kullanıldı.
 
 ## Sınıflar ve Veri Yapıları
