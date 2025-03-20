@@ -19,7 +19,7 @@ You can find Turkish version of this documentation in the previous commit. Not r
 
 ## Mermaid Diagram
 
-![Diagram](image.png)
+![Diagram](mermaiddiagram.png)
 
 ## Technologies and Libraries Used
 
@@ -148,7 +148,7 @@ fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
 
 ## Output
 
-![alt text](image-1.png)
+![alt text](outputofthepythoncode.png)
 
 ## Potential Improvements
 
@@ -162,6 +162,6 @@ fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
 ## React Visualization
 
 Two versions.
-<img src="metroglobalaihubtahirdincerproje.png" width="250" alt="Website for metro">
+<img src="v1.png" width="250" alt="Website for metro">
 
 <img src="v2.png" width="250" alt="Website for metro">
