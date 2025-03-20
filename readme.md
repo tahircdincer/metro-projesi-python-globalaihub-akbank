@@ -9,9 +9,13 @@ This project implements a metro simulation that can find:
 
 You can find Turkish version of this documentation in the previous commit. Not recommended because I thought the terminology fits more in English.
 
-Here is the link for visualized as a UI version: https://tahirdincermetroprojeglobalaihub.netlify.app/
-If you click audio button or adjust the slider, you get the easter egg:)
-(At the bottom of this project an image of website is provided.)
+## Link for the React Visualization
+
+1. Here is the link for visualized as a UI version 1: https://tahirdincermetroprojeglobalaihub.netlify.app/
+   If you click audio button or adjust the slider, you get the easter egg
+2. Here is the version 2:
+   https://tahirdincermetroglobalaihubv2.netlify.app/
+   (At the bottom of this project an image of website is provided.)
 
 ## Mermaid Diagram
 
@@ -157,4 +161,7 @@ fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
 
 ## React Visualization
 
+Two versions.
 <img src="metroglobalaihubtahirdincerproje.png" width="250" alt="Website for metro">
+
+<img src="image-2.png" width="250" alt="Website for metro">
