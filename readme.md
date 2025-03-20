@@ -1,4 +1,4 @@
-# Metro Simülasyonu Dokümantasyonu
+# Documentation for Metro Simulation
 
 ## Project Overview
 
@@ -6,7 +6,12 @@ This project implements a metro simulation that can find:
 
 1. The route with the fewest transfers between two stations using the BFS algorithm
 2. The fastest route between two stations using the A\* algorithm
-   You can find Turkish version of this documentation in the previous commit.
+
+You can find Turkish version of this documentation in the previous commit. Not recommended because I thought the terminology fits more in English.
+
+Here is the link for visualized as a UI version: https://tahirdincermetroprojeglobalaihub.netlify.app/
+If you click audio button or adjust the slider, you get the easter egg:)
+(At the bottom of this project an image of website is provided.)
 
 ## Mermaid Diagram
 
@@ -149,3 +154,7 @@ fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
    - Consider station wait times
 
    **Can add more later.**
+
+## React Visualization
+
+![Website for metro](metroglobalaihubtahirdincerproje.png)
