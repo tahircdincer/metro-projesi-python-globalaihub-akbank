@@ -164,4 +164,4 @@ fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
 Two versions.
 <img src="metroglobalaihubtahirdincerproje.png" width="250" alt="Website for metro">
 
-<img src="image-2.png" width="250" alt="Website for metro">
+<img src="v2.png" width="250" alt="Website for metro">
