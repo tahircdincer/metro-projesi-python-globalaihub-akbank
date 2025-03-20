@@ -157,4 +157,4 @@ fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
 
 ## React Visualization
 
-![Website for metro](metroglobalaihubtahirdincerproje.png)
+![Website for metro](metroglobalaihubtahirdincerproje.png){width=250}
