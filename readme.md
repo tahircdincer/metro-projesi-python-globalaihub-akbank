@@ -1,150 +1,151 @@
 # Metro Simülasyonu Dokümantasyonu
 
-## Proje Genel Bakışı
+## Project Overview
 
-Proje aşağıdaki koşulları sağlayan bir metro ağı simülasyonu oluşturur:
+This project implements a metro simulation that can find:
 
-1. BFS algoritmasını kullanarak iki istasyon arasında en az aktarmalı rotayı bulur.
-2. A\* algoritmasını kullanarak iki istasyon arasında en hızlı rotayı bulur.
+1. The route with the fewest transfers between two stations using the BFS algorithm
+2. The fastest route between two stations using the A\* algorithm
+   You can find Turkish version of this documentation in the previous commit.
 
 ## Mermaid Diagram
 
 ![Diagram](image.png)
 
-## Kullanılan Teknolojiler ve Kütüphaneler
+## Technologies and Libraries Used
 
-- **collections.deque**: BFS algoritması için kuyruk veri yapısını uygulandı.
-- **heapq**: A\* algoritması için öncelik kuyruğunu uygulandı.
-- **defaultdict**: İstasyonları metro hatlarına göre düzenlendi.
-- **typing**: Kod okunabilirliğini ve sürdürülebilirliği adına tip ipuçları için kullanıldı.
+- **collections.deque**: Used to implement the queue data structure for the BFS algorithm
+- **heapq**: Used to implement the priority queue for the A\* algorithm
+- **defaultdict**: Used to organize stations by metro lines
+- **typing**: Used for type hints to improve code readability and maintainability
 
-## Sınıflar ve Veri Yapıları
+## Classes and Data Structures
 
-### Istasyon
+### Station
 
-Aşağıdaki parametrelere sahip bir metro istasyonunu temsil eder:
+Represents a metro station with the following attributes:
 
-- `idx`: İstasyon için benzersiz tanımlayıcı(unique identifier, unique id olarak da söylebiliriz.)
-- `ad`: İstasyonun adı
-- `hat`: Bu istasyonun ait olduğu metro hattı
-- `komsular`: Komşu istasyonlar ve seyahat süreleri listesi
+- `idx`: Unique identifier for the station
+- `ad`: Name of the station
+- `hat`: The metro line this station belongs to
+- `komsular`: List of neighboring stations and travel times
 
-### MetroAgi
+### MetroAgi \ Metro Network
 
-Aşağıdaki bileşenlerle metro ağını yönetir:
+Manages the metro network with the following:
 
-- `istasyonlar`: İstasyon IDlerini Istasyon nesnelerine eşleyen dictionary
-- `hatlar`: İstasyonları metro hatlarına göre düzenleyen dictionary
+- `istasyonlar`: Dictionary mapping station IDs to Istasyon objects
+- `hatlar`: Dictionary organizing stations by metro lines
 
-## Algoritmalar
+## Algorithms
 
-### BFS (Genişlik Öncelikli Arama) - `en_az_aktarma_bul`
+### BFS (Breadth-First Search) - `en_az_aktarma_bul`
 
-BFS, düğümleri (istasyonları) tek tek, seviye seviye keşfeder, bu da en az aktarma sayısına sahip yolları bulmak için idealdir.
+BFS explores nodes (stations) level by level, making it ideal for finding paths with the minimum number of edges (transfers).
 
-#### Nasıl çalışır:
+#### How does the project work:
 
-1. Başlangıç istasyonu ile başlayıp, bir kuyruğa eklendi.
-2. Döngüleri önlemek adına zaten ziyaret edilen istasyonlar takip edildi.
-3. Kuyrukta her istasyon:
-   - Hedef olup olmadığı kontrol edildi.
-   - Değilse, ziyaret edilmemiş tüm komşuları kuyruğa eklendi.
-4. Hedef bulunana kadar veya kuyruk boşalana kadar devam edildi.
+1. Start with the initial station, then add it to a queue
+2. Keep track of stations already've been visited to avoid cycles
+3. For every station in the queue:
+   - Check if it is the destination
+   - If not, then add all unvisited neighbors to the queue
+4. Continue until destination is found or queue is empty
 
-#### Uygulama Detayları:
+#### Implementation Details:
 
-- FIFO kuyruk işlemleri için `collections.deque` kullanıldı.
-- Keşfederken her istasyona olan yolu(path) korundu.
-- İstasyonlar arası seyahat sürelerini önemsemeyip, sadece durak sayısına odaklanıldı.
+- Uses `collections.deque` for efficient first-in-first-out queue operations
+- Maintains the path to each station as we explore
+- Ignores travel times between stations, focusing only on number of stops
 
-#### Zaman Karmaşıklığı: O(V + E)
+#### Time Complexity: O(V + E)
 
-- V: Düğüm sayısı (istasyonlar)
-- E: Kenar sayısı (bağlantılar)
+- V: Number of vertices (stations)
+- E: Number of edges (connections)
 
-#### Yer Karmaşıklığı: O(V)
+#### Space Complexity: O(V)
 
-- Kuyruk ve ziyaret edilen kümesini depolamak için
+- For storing the queue and visited set
 
-### A\* Algoritması - `en_hizli_rota_bul`
+### A\* Algorithm - `en_hizli_rota_bul`
 
-A\*, aramayı hedefe yönlendirmek için bir sezgisel kullanan bilgilendirilmiş bir arama algoritmasıdır, bu da en kısa yolu bulmaya yarar.
+A\* is an informed search algorithm that uses a heuristic to guide the search toward the goal, making it efficient for finding the shortest path.
 
-#### Bileşenler:
+#### Components:
 
-- **g_score**: Başlangıçtan geçerli düğüme kadar olan gerçek maliyet
-- **h_score**: Geçerli düğümden hedefe kadar olan tahmini maliyet (sezgisel)
-- **f_score**: g_score + h_score (toplam tahmini maliyet)
+- **g_score**: The actual cost from the start to the current node
+- **h_score**: The estimated cost from the current node to the goal (heuristic)
+- **f_score**: g_score + h_score (total estimated cost)
 
-#### Sezgisel Fonksiyon:
+#### Heuristic Function:
 
-- Hat değişikliği gerekebileceğine dayalı ek maliyeti tahmin edildi.
-- Kabul edilebilirdir (gerçek maliyeti asla fazla tahmin etmez)
+- Estimates additional cost based on whether a line change might be needed
+- Is admissible (never overestimates the actual cost)
 
-#### Nasıl çalışır:
+#### How it works:
 
-1. Başlangıç istasyonu ile başlanıldı ve f_score'a göre sıralanmış bir öncelik kuyruğuna eklenildi.
-2. Her istasyon için bulunan en iyi g_score'u takip edildi
-3. Öncelik kuyruğundaki her istasyon için:
-   - Hedef olup olmadığını kontrol edildi
-   - Değilse, tüm komşulara bakıldı ve daha iyi bir yol bulunursa g_score'ları güncellendi.
-   - Komşuları f_score'ları ile öncelik kuyruğuna eklenildi.
-4. Hedef bulunana kadar veya öncelik kuyruğu boşalana kadar devam edildi.
+1. Start with the initial station and add it to a priority queue ordered by f_score
+2. Keep track of the best g_score found for each station
+3. For each station in the priority queue:
+   - Check if it's the destination
+   - If not, explore all neighbors and update their g_scores if a better path is found
+   - Add neighbors with their f_scores to the priority queue
+4. Continue until destination is found or priority queue is empty
 
-#### Uygulama Detayları:
+#### Implementation Details:
 
-- Verimli öncelik kuyruğu işlemleri için `heapq` kullanıldı
-- Keşfedilen her istasyona bilinen en iyi yolu korundu
-- Keşfi f_score'a göre önceliklendirildi
-- f_score'lar denk olduğunda kararlı sıralama sağlamak adına istasyon kimliği, idsi kullanıldı
+- Uses `heapq` for efficient priority queue operations
+- Maintains the best known path to each explored station
+- Prioritizes exploration based on f_score
+- Uses station ID to ensure stable ordering when f_scores are equal
 
-#### Zaman Karmaşıklığı: O(E + V log V)
+#### Time Complexity: O(E + V log V)
 
-- V: Düğüm sayısı (istasyonlar)
-- E: Kenar sayısı (bağlantılar)
+- V: Number of vertices (stations)
+- E: Number of edges (connections)
 
-#### Yer Karmaşıklığı: O(V)
+#### Space Complexity: O(V)
 
-- Öncelik kuyruğu ve yol bilgilerini depolamak için
+- For storing the priority queue and path information
 
-## Neden Bu Algoritmalar?
+## Why These Algorithms?
 
-1. **En Az Aktarma için BFS:**
+1. **BFS for Fewest Transfers:**
 
-   - BFS doğal olarak en az aktarmaya sahip yolu bulur
-   - Her kenar(edge) potansiyel bir aktarmayı temsil ettiğinde idealdir.
-   - Uygulaması çok basit ve bu amaç adına gayet uyumludur.
+   - BFS finds the path with the fewest edges
+   - Ideal when each edge represents a potential transfer
+   - Simple to implement and efficient for this purpose
 
-2. **En Hızlı Rota için A\*:**
-   - A\*, Dijkstra algoritmasını bir sezgiselle birleştirir.
-   - İyi bir sezgisel mevcut olduğunda Dijkstra'dan daha verimlidir.
-   - Hem seyahat sürelerini hem de potansiyel hat değişikliklerini hesaba katabilir.
+2. **A\* for Fastest Route:**
+   - A\* combines Dijkstra's algorithm with a heuristic
+   - More efficient than Dijkstra's when a good heuristic is available
+   - Can account for both travel times and potential line changes
 
-## Örnek Kullanım
+## Sample Usage
 
 ```python
-# Metro ağını oluştur
+# Create the metro network
 metro = MetroAgi()
 
-# İstasyonları ve bağlantıları ekle
+# Add stations and connections
 metro.istasyon_ekle("K1", "Kızılay", "Kırmızı Hat")
 metro.istasyon_ekle("M1", "AŞTİ", "Mavi Hat")
-metro.baglanti_ekle("K1", "M1", 5)  # İstasyonları seyahat süresiyle bağla
+metro.baglanti_ekle("K1", "M1", 5)  # Connect stations with travel time
 
-# Rotaları bul
-en_az_aktarma = metro.en_az_aktarma_bul("K1", "M1")
-en_hizli_rota, toplam_sure = metro.en_hizli_rota_bul("K1", "M1")
+# Find routes
+fewest_transfers = metro.en_az_aktarma_bul("K1", "M1")
+fastest_route, total_time = metro.en_hizli_rota_bul("K1", "M1")
 ```
 
 ## Output
 
 ![alt text](image-1.png)
 
-## Olabilecek İyileştirmeler
+## Potential Improvements
 
-1. **İşlevsellik:**
+1. **Functionality:**
 
-   - Günün saatlerine göre rota belirleme.
-   - İstasyon bekleme süreleri de dikkate alınabilir.
+   - Add time dependent routing (for example rush hour)
+   - Consider station wait times
 
-   **Dahası duruma göre eklenecektir.**
+   **Can add more later.**
