@@ -44,7 +44,7 @@ BFS, düğümleri (istasyonları) tek tek, seviye seviye keşfeder, bu da en az 
 
 #### Nasıl çalışır:
 
-1. Başlangıç istasyonu ile başlayın ve bir kuyruğa eklendi.
+1. Başlangıç istasyonu ile başlayıp, bir kuyruğa eklendi.
 2. Döngüleri önlemek adına zaten ziyaret edilen istasyonlar takip edildi.
 3. Kuyrukta her istasyon:
    - Hedef olup olmadığı kontrol edildi.
@@ -54,7 +54,7 @@ BFS, düğümleri (istasyonları) tek tek, seviye seviye keşfeder, bu da en az 
 #### Uygulama Detayları:
 
 - FIFO kuyruk işlemleri için `collections.deque` kullanıldı.
-- Keşfederken her istasyona olan yolu korundu.
+- Keşfederken her istasyona olan yolu(path) korundu.
 - İstasyonlar arası seyahat sürelerini önemsemeyip, sadece durak sayısına odaklanıldı.
 
 #### Zaman Karmaşıklığı: O(V + E)
@@ -135,6 +135,10 @@ metro.baglanti_ekle("K1", "M1", 5)  # İstasyonları seyahat süresiyle bağla
 en_az_aktarma = metro.en_az_aktarma_bul("K1", "M1")
 en_hizli_rota, toplam_sure = metro.en_hizli_rota_bul("K1", "M1")
 ```
+
+## Output
+
+![alt text](image-1.png)
 
 ## Olabilecek İyileştirmeler
 
