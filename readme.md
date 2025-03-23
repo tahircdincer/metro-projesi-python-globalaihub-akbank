@@ -12,7 +12,7 @@ You can find Turkish version of this documentation in the previous commit. Not r
 ## Link for the React Visualization
 
 1. Here is the link for visualized as a UI version 1: https://tahirdincermetroprojeglobalaihub.netlify.app/
-   If you click audio button or adjust the slider, you get the easter egg
+   If you click the audio button twice, you get the easter egg
 2. Here is the version 2:
    https://tahirdincermetroglobalaihubv2.netlify.app/
    (At the bottom of this project an image of website is provided.)
